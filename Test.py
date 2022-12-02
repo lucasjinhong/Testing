@@ -20,7 +20,7 @@ def get_args():
 
 def get_testbed_ip(id):
     try:
-        ip_addr = subprocess.check_output(['../bed-control/bed.sh', '-b', id])
+        ip_addr = subprocess.check_output(['./bed.sh', '-b', id])
         ip_addr = ip_addr.decode('ascii').split('\t')[1]
     except:
         raise ValueError('Testbed_ID not found')
