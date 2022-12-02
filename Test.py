@@ -73,31 +73,6 @@ def get_test_report(ip_addr, time, remote_path, version_name):
 
     return local_path
 
-def print_result(process):
-    flag = 0
-    log_path = ''
-    report_path = ''
-
-    for line in iter(process.stdout.readline, ''):
-        if line == 'END\n':
-            break
-        print(line, end='')
-
-        # Error Handler
-        if 'Error' in line:
-            flag = 1
-
-        # get path of logs and reports
-        if 'letp_wrapper_logs' in line:
-            log_path = line
-        elif 'letp_wrapper_reports' in line:
-            report_path = line
-
-    log_path = ''.join(x for x in findall(r'[\w+.+]+/', log_path)[-4:])
-    report_path = ''.join(x for x in findall(r'[\w+.+]+/', report_path)[-2:])
-
-    return log_path, report_path, flag
-
 def main():
     args = get_args()
 
