@@ -75,7 +75,7 @@ def get_test_report(ip_addr, time, remote_path, version_name):
 
 def main():
     args = get_args()
-
+    cmd_ssh = '1wqe'
     testbed_ip = get_testbed_ip('qwr')
     cmd_ssh = cmd_ssh + testbed_ip
     get_test_report(testbed_ip, '1', '1', '1')
