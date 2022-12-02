@@ -13,6 +13,16 @@ def get_args():
                         help='List of test/campaigns to run')
     return parser.parse_args()
 
+def get_testbed_ip(id):
+    try:
+        ip_addr = '10.29.51.83'
+        # ip_addr = subprocess.check_output(['./bed.sh', '-b', id])
+        # ip_addr = ip_addr.decode('ascii').split('\t')[1]
+    except:
+        raise ValueError('Testbed_ID not found')
+
+    return ip_addr
+
 def get_test_report(ip_addr, time, remote_path, version_name):
     ssh_client = paramiko.SSHClient()
     ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -63,10 +73,36 @@ def get_test_report(ip_addr, time, remote_path, version_name):
 
     return local_path
 
+def print_result(process):
+    flag = 0
+    log_path = ''
+    report_path = ''
+
+    for line in iter(process.stdout.readline, ''):
+        if line == 'END\n':
+            break
+        print(line, end='')
+
+        # Error Handler
+        if 'Error' in line:
+            flag = 1
+
+        # get path of logs and reports
+        if 'letp_wrapper_logs' in line:
+            log_path = line
+        elif 'letp_wrapper_reports' in line:
+            report_path = line
+
+    log_path = ''.join(x for x in findall(r'[\w+.+]+/', log_path)[-4:])
+    report_path = ''.join(x for x in findall(r'[\w+.+]+/', report_path)[-2:])
+
+    return log_path, report_path, flag
+
 def main():
     args = get_args()
 
-    testbed_ip = '10.29.51.83'
+    testbed_ip = get_testbed_ip('qwr')
+    cmd_ssh = cmd_ssh + testbed_ip
     get_test_report(testbed_ip, '1', '1', '1')
 
 if __name__ == '__main__':
